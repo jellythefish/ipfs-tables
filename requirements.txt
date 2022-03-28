@@ -1,0 +1,2 @@
+ipfshttpclient
+psycopg2-binary
