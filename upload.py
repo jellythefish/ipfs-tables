@@ -1,12 +1,6 @@
 import argparse
-import logging
 
-import pathlib
-import time
-import socket
-
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
+from clients.client import Client
 
 #    hash VARCHAR PRIMARY KEY,
 #    name VARCHAR NOT NULL, -- 'i.e. lectures, lecture01.mov'
@@ -17,38 +11,6 @@ logging.getLogger().setLevel(logging.DEBUG)
 #    bytesize INT NOT NULL,
 #    tags VARCHAR[],
 #    uploaded_by VARCHAR
-
-def extract_meta(file, media_format=None, tags=None):
-    meta = {}
-    meta["name"] = file.name
-    filename_parts = file.name.split('.')
-    if len(filename_parts) > 1:
-        meta["file_extension"] = ".{}".format(filename_parts[1])
-    else:
-        meta["file_extension"] = ""
-    meta["media_format"] = media_format if media_format else ""
-    meta["upload_timestamp"] = int(time.time())
-    meta["bytesize"] = file.stat().st_size
-    meta["tags"] = tags.split(',') if tags else []
-    meta["uploaded_by"] = socket.gethostname()
-    return meta
-
-
-def upload_to_ipfs(path, media_format=None, tags=None):
-    object = pathlib.Path(path)
-    assert object.exists(), "path {} does not exist".format(path)
-
-    if object.is_file():
-        logging.debug("Uploading file {} to ipfs db".format(object.resolve()))
-        metadata = extract_meta(object, media_format, tags)
-        return [(object, metadata)]
-    if object.is_dir():
-        files = []
-        logging.debug("Uploding files in directory {} to ipfs".format(object.resolve()))
-        for file in object.iterdir():
-            files.append((file, extract_meta(file, media_format, tags)))
-        return files
-
 
 def main():
     parser = argparse.ArgumentParser('IPFS DB Client')
@@ -66,10 +28,12 @@ def main():
 
     args = parser.parse_args()
 
+    client = Client()
+
     if hasattr(args, 'upload_command'):
         media_format = args.format if hasattr(args, 'format') else None
         tags = args.tags if hasattr(args, 'tags') else None
-        upload_to_ipfs(args.path, media_format, tags)
+        client.upload_to_ipfs(args.path, media_format, tags)
     elif hasattr(args, 'search_command'):
         print("Search command called with request", args.request)
         # Call To Search Engine
