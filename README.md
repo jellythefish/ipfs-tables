@@ -1,4 +1,5 @@
-# IPFS4Students 
+# IPFS4Students
+Проект по курсу Децентрализованные Системы в НИУ ВШЭ
 Project withing the HSE Сourse "Decentralized Systems"
 
 ## Краткое описание инфраструктуры
@@ -16,6 +17,7 @@ Project withing the HSE Сourse "Decentralized Systems"
 ## Использование:
 ```python
 # upload
-python ./main.py upload lecture05.md --format "notes" --tags "tag1,tag2,tag3"
+python ./main.py upload file_examples/sample.mp4 --format "notes" --tags "tag1,tag2,tag3"
 # search
+python ./main.py search --search "project" --type "notes"
 ```
