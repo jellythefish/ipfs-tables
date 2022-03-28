@@ -60,12 +60,13 @@ class SearchCommand():
         for row in rows:
             hash, name, type, media_format, file_extension, upload_timetsamp, uploaded_by, bytesize, tags = row
             object = Object(hash, name, type, file_extension, upload_timetsamp, uploaded_by, bytesize, tags)
-            result.append(object.get_result())
+            result.append(object)
 
         return result
 
-    def process_metadata_result():
-        pass
+    def process_metadata_result(self, object):
+        hash = object.hash
+        return self.ipfs.object.get(hash)
 
 
 def main():
