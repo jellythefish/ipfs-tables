@@ -8,7 +8,7 @@ import logging
 import time
 import socket
 
-class Client(object):
+class UploadClient(object):
     def __init__(self) -> None:
         self.db_client = DatabaseClient("postgres", "postgres", "postgres", "51.250.13.25", 5432)
         self.ipfs_client = IPFSClient()
