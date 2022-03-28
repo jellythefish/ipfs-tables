@@ -1,11 +1,8 @@
 from argparse import ArgumentParser
-import io
 import os
 import sys
-from setuptools import find_packages, setup, Command
-import requests
 import psycopg2
-from ipfs_client import IPFSClient
+from clients.ipfs_client import IPFSClient
 
 METADATA_DB_HOST = '51.250.13.25'
 METADATA_DB_PORT = 5432
@@ -37,7 +34,7 @@ class Object():
         return f"Name: {self.name}\nType: {self.type}, link: {url}\n"
 
 
-class SearchCommand():
+class SearchClient():
     def __init__(self):
         self.conn = psycopg2.connect(
             host=METADATA_DB_HOST,
@@ -47,7 +44,6 @@ class SearchCommand():
             password="postgres")
         self.cursor = self.conn.cursor()
         self.ipfs = IPFSClient()
-
 
     def search_in_metadata(self, search_key, search_type=None):
         query_str = f"SELECT hash, name, type, media_format, file_extension, upload_timestamp, uploaded_by, bytesize, tags FROM {TABLE_NAME} WHERE name LIKE '%{search_key}%'"
@@ -68,37 +64,26 @@ class SearchCommand():
         hash = object.hash
         return self.ipfs.object.get(hash)
 
-
-def main():
-    parser = ArgumentParser(prog='IPFS-tables client')
-
-    parser.add_argument('--search', help="Search phrase")
-    parser.add_argument('--type', help="Search type (video, audio, text)")
-
-    args = parser.parse_args()
-
-    print(f"Using search phrase: {args.search}, search type: {args.type}")
-
-    search = args.search
-    cmd = SearchCommand()
-    metadata_results = cmd.search_in_metadata(search, args.type)
-    result = ''
-    for result in metadata_results:
-        url = cmd.process_metadata_result(metadata_result)
-        result.append(result.get_formatted_result(url))
-
-    additional_search = search.split()
-    for subsearch in additional_search:
-        metadata_results = cmd.search_in_metadata(subsearch, args.type)
+    def search(self, search, type):
+        print(f"Using search phrase: {search}, search type: {type}")
+        metadata_results = self.search_in_metadata(search, type)
         result = ''
         for result in metadata_results:
-            url = cmd.process_metadata_result(metadata_result)
+            url = self.process_metadata_result(metadata_result)
             result.append(result.get_formatted_result(url))
 
-    if len(result) == 0:
-        print('Nothing found')
-    else:
-        print(result)
+        additional_search = search.split()
+        for subsearch in additional_search:
+            metadata_results = self.search_in_metadata(subsearch, type)
+            result = ''
+            for result in metadata_results:
+                url = self.process_metadata_result(metadata_result)
+                result.append(result.get_formatted_result(url))
+
+        if len(result) == 0:
+            print('Nothing found')
+        else:
+            print(result)
 
 
 if __name__ == '__main__':
