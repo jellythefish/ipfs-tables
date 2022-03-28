@@ -28,10 +28,10 @@ class Client(object):
         filename_parts = file.name.split('.')
         if len(filename_parts) > 1:
             meta["file_extension"] = ".{}".format(filename_parts[1])
-            meta["type"] = "directory"
         else:
             meta["file_extension"] = ""
-            meta["type"] = "file"
+
+        meta["type"] = "file"
         meta["media_format"] = media_format if media_format else ""
         meta["upload_timestamp"] = int(time.time())
         meta["bytesize"] = file.stat().st_size
