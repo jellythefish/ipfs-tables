@@ -51,7 +51,9 @@ class Client(object):
             result = [(object, metadata)]
         if object.is_dir():
             logging.debug("Uploding files in directory {} to ipfs".format(object.resolve()))
-            for file in object.iterdir():
+            for file in object.rglob("*"):
+                if file.is_dir():
+                    continue
                 result.append((file, self._extract_meta(file, media_format, tags)))
 
         self._upload_files(result)
