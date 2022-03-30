@@ -11,7 +11,7 @@ Description=IPFS daemon
 After=network.target
 [Service]
 User=ipfsuser
-ExecStart=/usr/local/bin/ipfs daemon
+ExecStart=/usr/local/bin/ipfs daemon --enable-pubsub-experiment
 [Install]
 WantedBy=multiuser.target
 EOT
