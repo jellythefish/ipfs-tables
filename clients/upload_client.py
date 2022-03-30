@@ -7,6 +7,7 @@ import pathlib
 import logging
 import time
 import socket
+import json
 
 class UploadClient(object):
     def __init__(self) -> None:
@@ -21,6 +22,7 @@ class UploadClient(object):
             response = self.ipfs_client.create_file(file)
             meta["hash"] = response["Hash"]
             self.db_client.add(meta)
+            self.ipfs_client.pub("updates", json.dumps(meta))
 
     def _extract_meta(self, file: pathlib.Path, media_format=None, tags=None):
         meta = {}

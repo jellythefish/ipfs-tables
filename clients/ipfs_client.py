@@ -1,4 +1,5 @@
 import ipfshttpclient
+import json
 
 class IPFSClient(object):
     def __init__(self, address = None):
@@ -12,3 +13,9 @@ class IPFSClient(object):
 
     def get_file(self, filename):
         return self.client.get(filename)
+
+    def pub(self, topic: str, meta: dict):
+        self.client.pubsub.publish(topic, json.dumps(meta))
+
+    def sub(self, topic: str):
+        self.client.pubsub.subscribe(topic)
