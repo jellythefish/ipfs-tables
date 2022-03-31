@@ -42,7 +42,8 @@ class SearchClient():
             port=METADATA_DB_PORT,
             database="postgres",
             user="postgres",
-            password="postgres")
+            password="postgres",
+            connect_timeout=10)
         self.postgres_cursor = self.postgres_conn.cursor()
         self.ipfs = IPFSClient()
         self.sqlite_conn = sqlite3.connect('meta.db')
