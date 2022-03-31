@@ -1,7 +1,8 @@
 import psycopg2
+METADATA_DB_HOST = '51.250.13.25'
 
 class DatabaseClient(object):
-    def __init__(self, name, user, password, host, port):
+    def __init__(self, name='postgres', user='postgres', password='postgres', host=METADATA_DB_HOST, port=5432):
         try:
             self.conn = psycopg2.connect(dbname=name, user=user, password=password, host=host, port=port,
                                      connect_timeout=10)
@@ -21,3 +22,12 @@ class DatabaseClient(object):
             cursor.close()
         except Exception as e:
             print(f"error occured while appending to database: {e}")
+
+    def cursor(self):
+        if self.conn is None:
+            return None
+        cursor = self.conn.cursor()
+        return cursor
+
+    def is_connected(self):
+        return self.conn is not None
