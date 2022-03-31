@@ -48,6 +48,9 @@ class LocalSQLiteDatabaseClient(object):
             return result
         except Exception as e:
             print(f"error occured while getting from database: {e}")
+
+    def cursor(self):
+        return self.conn.cursor()
             
 
 # def example():
