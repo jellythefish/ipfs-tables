@@ -4,7 +4,7 @@ class DatabaseClient(object):
     def __init__(self, name, user, password, host, port):
         try:
             self.conn = psycopg2.connect(dbname=name, user=user, password=password, host=host, port=port,
-                                     connection_timeout=10)
+                                     connect_timeout=10)
         except Exception as e:
             print(f"error occured while connecting to the database: {e}")
             self.conn = None
